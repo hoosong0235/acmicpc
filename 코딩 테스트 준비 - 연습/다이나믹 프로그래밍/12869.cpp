@@ -3,46 +3,51 @@ using namespace std;
 #define MAX 60
 
 
-int n, s1, s2, s3, cnt = 0;
-bool dp2[MAX + 1][MAX + 1];
-bool dp3[MAX + 1][MAX + 1][MAX + 1];
+int n, a, b, c;
 
 
 int main() {
     cin >> n;
     if (n == 1) {
-        cin >> s1;
-        cout << s1 / 9 + (s1 % 9 ? 1 : 0);
+        cin >> a;
+        cout << (a / 9 + (a % 9 ? 1 : 0));
     } else if (n == 2) {
-        cin >> s1 >> s2;
-        dp2[s1][s2] = true;
-        while (!dp2[0][0]) {
-            for (int i = 0; i <= MAX; i++)
-                for (int j = 0; j <= MAX; j++)
-                    if (dp2[i][j]) {
-                        dp2[i - 9 >= 0 ? i - 9 : 0][j - 3 >= 0 ? j - 3 : 0] = true;
-                        dp2[i - 3 >= 0 ? i - 3 : 0][j - 9 >= 0 ? j - 9 : 0] = true;
-                    }
-            cnt++;
+        struct bfs { int d, a, b; };
+        bool visited[MAX + 1][MAX + 1];
+        deque<bfs> q;
+        int dmg[2][3] = {{9, 3}, {3, 9}};
+        cin >> a >> b;
+        visited[a][b] = true;
+        q.push_back(bfs{0, a, b});
+        while (!q.empty()) {
+            bfs c = q.front(); q.pop_front();
+            if (!c.a && !c.b) { cout << c.d; return 0; }
+            for (int d = 0; d < 2; d++) {
+                int na = c.a - dmg[d][0], nb = c.b - dmg[d][1];
+                na = max(0, na), nb = max(0, nb);
+                if (visited[na][nb]) continue;
+                visited[na][nb] = true;
+                q.push_back(bfs{c.d + 1, na, nb});
+            }
         }
-        cout << cnt;
     } else {
-        cin >> s1 >> s2 >> s3;
-        dp3[s1][s2][s3] = true;
-        while (!dp3[0][0][0]) {
-            for (int i = 0; i <= MAX; i++)
-                for (int j = 0; j <= MAX; j++)
-                    for (int k = 0; k <= MAX; k++)
-                        if (dp3[i][j][k]) {
-                            dp3[i - 9 >= 0 ? i - 9 : 0][j - 3 >= 0 ? j - 3 : 0][k - 1 >= 0 ? k - 1 : 0] = true;
-                            dp3[i - 9 >= 0 ? i - 9 : 0][j - 1 >= 0 ? j - 1 : 0][k - 3 >= 0 ? k - 3 : 0] = true;
-                            dp3[i - 3 >= 0 ? i - 3 : 0][j - 9 >= 0 ? j - 9 : 0][k - 1 >= 0 ? k - 1 : 0] = true;
-                            dp3[i - 3 >= 0 ? i - 3 : 0][j - 1 >= 0 ? j - 1 : 0][k - 9 >= 0 ? k - 9 : 0] = true;
-                            dp3[i - 1 >= 0 ? i - 1 : 0][j - 9 >= 0 ? j - 9 : 0][k - 3 >= 0 ? k - 3 : 0] = true;
-                            dp3[i - 1 >= 0 ? i - 1 : 0][j - 3 >= 0 ? j - 3 : 0][k - 9 >= 0 ? k - 9 : 0] = true;
-                        }
-            cnt++;
+        struct bfs { int d, a, b, c; };
+        bool visited[MAX + 1][MAX + 1][MAX + 1];
+        deque<bfs> q;
+        int dmg[6][3] = {{9, 3, 1}, {9, 1, 3}, {3, 9, 1}, {3, 1, 9}, {1, 9, 3}, {1, 3, 9}};
+        cin >> a >> b >> c;
+        visited[a][b][c] = true;
+        q.push_back(bfs{0, a, b, c});
+        while (!q.empty()) {
+            bfs c = q.front(); q.pop_front();
+            if (!c.a && !c.b && !c.c) { cout << c.d; return 0; }
+            for (int d = 0; d < 6; d++) {
+                int na = c.a - dmg[d][0], nb = c.b - dmg[d][1], nc = c.c - dmg[d][2];
+                na = max(0, na), nb = max(0, nb), nc = max(0, nc);
+                if (visited[na][nb][nc]) continue;
+                visited[na][nb][nc] = true;
+                q.push_back(bfs{c.d + 1, na, nb, nc});
+            }
         }
-        cout << cnt;
     }
 }

@@ -1,14 +1,18 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define ll long long
+#define MAXK 10000
+
+
+int n, k;
+int dp[MAXK + 1];
 
 
 int main() {
-    int n, k; cin >> n >> k;
-    vector<ll> dp(k + 1); dp[0] = 1;
-    for (int i = 0; i < n; i++) {
+    cin >> n >> k;
+    dp[0] = 1;
+    while (n--) {
         int v; cin >> v;
-        for (int i = v; i <= k; i++) dp[i] = dp[i - v] + dp[i];
+        for (int i = v; i <= k; i++) dp[i] += dp[i - v];
     }
     cout << dp[k];
 }
