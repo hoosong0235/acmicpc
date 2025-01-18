@@ -1,26 +1,30 @@
 #include <bits/stdc++.h>
 using namespace std;
+#define MAXN 50
+#define MAXM 1000
+
+
+int n, s, m;
+int ds[MAXN + 1], dp[MAXM + 1];
 
 
 int main() {
-    int n, s, m; cin >> n >> s >> m;
-    vector<vector<bool>> dp(n + 1, vector<bool>(m + 1, false));
+    cin >> n >> s >> m;
+    for (int i = 1; i <= n; i++) cin >> ds[i];
     
-    dp[0][s] = true;
+    dp[s]++;
     for (int i = 1; i <= n; i++) {
-        int d; cin >> d;
-        for (int j = 0; j <= m; j++) if (dp[i - 1][j]) {
-            if (j - d >= 0) dp[i][j - d] = true;
-            if (j + d <= m) dp[i][j + d] = true;
-        }
+        set<int> njs;
+        for (int j = 0; j <= m; j++)
+            if (dp[j]) {
+                if (0 <= j - ds[i]) njs.insert(j - ds[i]);
+                if (j + ds[i] <= m) njs.insert(j + ds[i]);
+                dp[j]--;
+            }
+        if (njs.empty()) { cout << -1; return 0; }
+        for (int nj: njs) dp[nj]++;
     }
     
-    int max_num = -1;
-    for (int j = 0; j <= m; j++) if (dp[n][j]) max_num = max(max_num, j);
-    cout << max_num;
-    
-    // for (int i = 0; i <= n; i++) {
-    //     for (int j = 0; j <= m; j++) cout << dp[i][j] << ' ';
-    //     cout << '\n';
-    // }
+    for (int i = m; i >= 0; i--)
+        if (dp[i]) { cout << i; return 0; }
 }
